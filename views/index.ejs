@@ -1,0 +1,1673 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Live Data Viewer</title>
+</head>
+<body>
+  <h1>Live Data Viewer</h1>
+  <ul>
+    <% data.forEach((item) => { %>
+      <li>
+        <strong>Aircraft Type:</strong> <%= item.aircraft_type %><br>
+        <strong>Altitude:</strong> <%= item.altitude_ft %> ft<br>
+        <strong>Callsign:</strong> <%= item.callsign %><br>
+        <strong>Event Latitude:</strong> <%= item.event_lat %><br>
+        <strong>Event Longitude:</strong> <%= item.event_lon %><br>
+        <strong>Event Time:</strong> <%= item.event_time %><br>
+        <strong>Event Type:</strong> <%= item.event_type %><br>
+        Add more fields as needed
+      </li>
+      <br>
+    <% }); %>
+  </ul>
+</body>
+</html> -->
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+
+    <title>Flightradar24</title>
+    <link rel="stylesheet" href="css/style.css" />
+
+  </head>
+
+  <body class="d-flex flex-column">
+    <nav class="navbar navbar-light fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand navbar-center" href="#"
+          ><img src="images/logo.svg" alt="logo"
+        /></a>
+
+        <form class="d-flex" style="margin-left: 1000px; height: 30px">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button
+            class="btn btn-success"
+            style="padding-top: 1px"
+            type="submit"
+          >
+            Search
+          </button>
+        </form>
+
+        <div
+          class="flex h-9 flex-col items-center justify-center text-white"
+          style="margin-left: 10px"
+          bis_skin_checked="1"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            class="fill-current h-4 w-5"
+            width="20"
+            height="20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M23.924 22.493a13.578 13.578 0 0 0-3.74-5.395 12.553 12.553 0 0 0-5.72-2.853c1.524-.604 2.8-1.754 3.605-3.25a7.725 7.725 0 0 0 .8-4.939c-.287-1.695-1.127-3.229-2.373-4.336A6.724 6.724 0 0 0 12.05 0a6.72 6.72 0 0 0-4.456 1.694c-1.253 1.099-2.1 2.628-2.397 4.321a7.727 7.727 0 0 0 .774 4.944c.797 1.5 2.067 2.658 3.587 3.27a12.564 12.564 0 0 0-5.694 2.778A13.58 13.58 0 0 0 .083 22.3c-.108.27-.11.574-.007.845.103.272.305.489.56.603a.99.99 0 0 0 .798.008 1.08 1.08 0 0 0 .57-.593c.834-2.088 2.235-3.869 4.026-5.115a10.413 10.413 0 0 1 6.033-1.888c2.143.016 4.234.703 6.007 1.976 1.774 1.273 3.152 3.074 3.96 5.175.078.203.212.377.384.5.173.122.375.188.583.188a.93.93 0 0 0 .386-.087 1.07 1.07 0 0 0 .543-.593c.1-.265.099-.562-.004-.826l.002-.001ZM7.132 7.369c0-1.022.286-2.02.823-2.87a4.952 4.952 0 0 1 2.19-1.903 4.632 4.632 0 0 1 2.82-.294 4.8 4.8 0 0 1 2.5 1.414 5.266 5.266 0 0 1 1.336 2.645 5.447 5.447 0 0 1-.277 2.985 5.115 5.115 0 0 1-1.798 2.319 4.693 4.693 0 0 1-2.713.87c-1.294 0-2.536-.544-3.451-1.513a5.323 5.323 0 0 1-1.43-3.653Z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span id="auth-button" class="whitespace-nowrap text-xs uppercase"
+            >Log in</span
+          >
+        </div>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasNavbar"
+          aria-controls="offcanvasNavbar"
+        >
+          <span class="navbar-toggler-icon" style="color: aliceblue"></span>
+        </button>
+
+        <div
+          class="offcanvas offcanvas-end bg-dark text-white"
+          tabindex="-1"
+          id="offcanvasNavbar"
+          aria-labelledby="offcanvasNavbarLabel"
+        >
+          <div class="offcanvas-header justify-content-end">
+            <button
+              type="button"
+              class="btn-close text-reset btn-close-white"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="offcanvas-body ms-3">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+              <button type="button" class="btn btn-success">
+                Upgrade now | Try free for 7 days
+              </button>
+
+              <li class="nav-item">
+                <a
+                  class="nav-link active bg-dark"
+                  style="color: rgb(239, 239, 11)"
+                  aria-current="page"
+                  href="#"
+                  >Flight tracker map&nbsp;<span
+                    class="badge bg-warning text-dark"
+                    >LIVE</span
+                  ></a
+                >
+              </li>
+
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle bg-dark text-white hov"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Aviation data
+                </a>
+                <ul class="dropdown-menu no-border bg-gray p-0" aria-labelledby="navbarDropdown">
+                  <li>
+                    <a class="dropdown-item bg-dark text-white hov" href="#"
+                      >Airports</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white hov" href="#"
+                      >Airlines</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white hov" href="#"
+                      >Aircraft</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white hov" href="#"
+                      >Flights</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white hov" href="#"
+                      >Pinned flights</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white hov" href="#"
+                      >Statistics</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white hov" href="#"
+                      >Search</a
+                    >
+                  </li>
+                </ul>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link bg-dark text-white" href="#">Email alerts</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link active bg-dark text-white"
+                  >Subscription plans</a
+                >
+              </li>
+
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle bg-dark text-white"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Add coverage
+                </a>
+                <ul
+                  class="dropdown-menu no-border p-0"
+                  aria-labelledby="navbarDropdown"
+                >
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Overview</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Apply for free receiver</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Build your own receiver</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Share your data</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Data sharer statistics</a
+                    >
+                  </li>
+                </ul>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle bg-dark text-white"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Commercial services
+                </a>
+                <ul
+                  class="dropdown-menu no-border p-0"
+                  aria-labelledby="navbarDropdown"
+                >
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Data services</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >App integration</a
+                    >
+                  </li>
+                </ul>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a href="#" class="nav-link active bg-dark text-white"
+                  >Press & media center</a
+                >
+              </li>
+
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle bg-dark text-white"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  About
+                </a>
+                <ul
+                  class="dropdown-menu no-border p-0"
+                  aria-labelledby="navbarDropdown"
+                >
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >About</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Apps</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Contact us</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >How it works</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Glossary</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#">FAQ</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Careers</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Privacy policy</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item bg-dark text-white" href="#"
+                      >Terms and conditions</a
+                    >
+                  </li>
+                </ul>
+              </li>
+
+              <li><hr class="dropdown-divider" /></li>
+
+              <li class="nav-item dropdown">
+                <a href="#" class="nav-link active bg-dark text-white"
+                  >MyFR24 - Flight logbook</a
+                >
+              </li>
+
+              <li class="nav-item dropdown">
+                <a href="#" class="nav-link active bg-dark text-white"
+                  >JetPhotos - Aviation photos</a
+                >
+              </li>
+
+              <li class="nav-item dropdown">
+                <a href="#" class="nav-link active bg-dark text-white">Forum</a>
+              </li>
+              <li class="nav-item dropdown">
+                <button class="btn btn-primary invisible" id="firebut" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Toggle right offcanvas</button>
+                <button class="btn btn-primary invisible" id="settings-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#settings-offcanvasRight" aria-controls="offcanvasRight"></button>
+                <button class="btn btn-primary invisible" id="weather-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#weather-offcanvasRight" aria-controls="offcanvasRight"></button>
+                <button class="btn btn-primary invisible" id="filters-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#filters-offcanvasRight" aria-controls="offcanvasRight"></button>
+                <button class="btn btn-primary invisible" id="widgets-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#widgets-offcanvasRight" aria-controls="offcanvasRight"></button>
+                <button class="btn btn-primary invisible" id="playback-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#playback-offcanvasRight" aria-controls="offcanvasRight"></button>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+
+
+    <!-- <div id="login-form" class="login-form p-4 z-10 bg-transparent">
+   
+      <section class="vh-100 gradient-custom z-10">
+       
+        <div class="container py-5 h-100">
+         
+          <div class="row d-flex justify-content-center align-items-center h-100">
+           
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+              <div class="card bg-dark text-white" style="border-radius: 1rem">
+                <div id="close-button" class="absolute top-2 right-2 cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="fill-current h-4 w-4"
+                    width="20" height="20" style="margin-left: 348px;">
+                    <path
+                      d="M13.414 12l5.293-5.293a1 1 0 1 0-1.414-1.414L12 10.586 6.707 5.293a1 1 0 1 0-1.414 1.414L10.586 12l-5.293 5.293a1 1 0 1 0 1.414 1.414L12 13.414l5.293 5.293a1 1 0 0 0 1.414-1.414L13.414 12z" />
+                  </svg>
+                </div>
+                <div class="card-body p-5 text-center">
+                  <div class="mb-md-5 mt-md-4 pb-5">
+                    <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                    <p class="text-white-50 mb-5">
+                      Please enter your login and password!
+                    </p>
+
+                    <div class="form-outline form-white mb-4">
+                      <input
+                        type="email"
+                        id="typeEmailX"
+                        class="form-control form-control-lg"
+                      />
+                      <label class="form-label" for="typeEmailX">Email</label>
+                    </div>
+
+                    <div class="form-outline form-white mb-4">
+                      <input
+                        type="password"
+                        id="typePasswordX"
+                        class="form-control form-control-lg"
+                      />
+                      <label class="form-label" for="typePasswordX"
+                        >Password</label
+                      >
+                    </div>
+
+                    <p class="small mb-5 pb-lg-2">
+                      <a class="text-white-50" href="#!">Forgot password?</a>
+                    </p>
+
+                    <button
+                      class="btn btn-outline-light btn-lg px-5"
+                      type="submit"
+                    >
+                      Login
+                    </button>
+
+                    <div
+                      class="d-flex justify-content-center text-center mt-4 pt-1"
+                    >
+                      <a href="#!" class="text-white"
+                        ><i class="fab fa-facebook-f fa-lg"></i
+                      ></a>
+                      <a href="#!" class="text-white"
+                        ><i class="fab fa-twitter fa-lg mx-4 px-2"></i
+                      ></a>
+                      <a href="#!" class="text-white"
+                        ><i class="fab fa-google fa-lg"></i
+                      ></a>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p class="mb-0">
+                      Don't have an account?
+                      <a href="#!" class="text-white-50 fw-bold">Sign Up</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div> -->
+
+
+
+    <div class="container acc side-view">
+      <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button text-white" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              Most tracked flights&nbsp;<span class="badge bg-warning text-dark">LIVE</span>
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show text-white" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body first bg-dark">
+
+              <div class="container bg-dark text-white">
+                <div class="row">
+                  
+                  <div class="card card-lay">
+                    <div class="card-body card-lay-body text-white">
+                      <div class="row">
+                        <div class="col-8 text-start" style="font-weight: 600;">1.TRIPLE32&nbsp;<span class="badge text-dark">EUFI</span></div>
+                        <div class="col text-end personcol">1,546 <img src="images/people.svg" /> </div>
+                      </div>
+                      <div class="row">
+                        <div class="col" style="font-size: 15px;">Teesside&nbsp;<span class="badge bg-secondary text-white">MME</span> - Natal&nbsp;<span class="badge bg-secondary text-white">NAT</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card card-lay">
+                    <div class="card-body card-lay-body text-white">
+                      <div class="row">
+                        <div class="col-8 text-start" style="font-weight: 600;">1.TRIPLE32&nbsp;<span class="badge text-dark">EUFI</span></div>
+                        <div class="col text-end personcol">1,546 <img src="images/people.svg" /> </div>
+                      </div>
+                      <div class="row">
+                        <div class="col" style="font-size: 15px;">Teesside&nbsp;<span class="badge bg-secondary text-white">MME</span> - Natal&nbsp;<span class="badge bg-secondary text-white">NAT</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card card-lay">
+                    <div class="card-body card-lay-body text-white">
+                      <div class="row">
+                        <div class="col-8 text-start" style="font-weight: 600;">1.TRIPLE32&nbsp;<span class="badge text-dark">EUFI</span></div>
+                        <div class="col text-end personcol">1,546 <img src="images/people.svg" /> </div>
+                      </div>
+                      <div class="row">
+                        <div class="col" style="font-size: 15px;">Teesside&nbsp;<span class="badge bg-secondary text-white">MME</span> - Natal&nbsp;<span class="badge bg-secondary text-white">NAT</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card card-lay">
+                    <div class="card-body card-lay-body text-white">
+                      <div class="row">
+                        <div class="col-8 text-start" style="font-weight: 600;">1.TRIPLE32&nbsp;<span class="badge text-dark">EUFI</span></div>
+                        <div class="col text-end personcol">1,546 <img src="images/people.svg" /> </div>
+                      </div>
+                      <div class="row">
+                        <div class="col" style="font-size: 15px;">Teesside&nbsp;<span class="badge bg-secondary text-white">MME</span> - Natal&nbsp;<span class="badge bg-secondary text-white">NAT</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card card-lay">
+                    <div class="card-body card-lay-body text-white">
+                      <div class="row">
+                        <div class="col-8 text-start" style="font-weight: 600;">1.TRIPLE32&nbsp;<span class="badge text-dark">EUFI</span></div>
+                        <div class="col text-end personcol">1,546 <img src="images/people.svg" /> </div>
+                      </div>
+                      <div class="row">
+                        <div class="col" style="font-size: 15px;">Teesside&nbsp;<span class="badge bg-secondary text-white">MME</span> - Natal&nbsp;<span class="badge bg-secondary text-white">NAT</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item mt-2">
+          <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              Airport disruptions&nbsp;<span class="badge bg-warning text-dark">LIVE</span>
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+            <div class="accordion-body second">
+              
+              <div class="container text-white">
+                <div class="row">
+                  
+                  <div class="card card-lay">
+                    <div class="card-body card-lay-body text-white">
+                      <div class="row">
+                        <div class="col-8 text-start" style="font-weight: 600;">Tel Aviv&nbsp;<span class="badge bg-secondary text-white">TLV</span></div>
+                        <div class="col text-end personcol">
+                          <img height="20px" width="20px" style="margin: 0 3px 3px 0;" src="images/aircraft-landing.svg" /> 
+                          <span class="dot-yellow"></span>
+                          <span class="dist-num">3.4</span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-8 text-start">
+                          <img src="images/sun.svg">31°C&nbsp;
+                          <span class="text-white-50">|</span>
+                          <img src="images/arrow.svg" height="20px" width="20px">31°C&nbsp;
+                        </div>
+                        <div class="col text-end personcol">
+                          <img height="20px" width="20px" style="margin: 0 3px 3px 0;" src="images/aircraft-takeoff.svg" /> 
+                          <span class="dot-orange"></span>
+                          <span class="dist-num">4.2</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card card-lay">
+                    <div class="card-body card-lay-body text-white">
+                      <div class="row">
+                        <div class="col-8 text-start" style="font-weight: 600;">Tel Aviv&nbsp;<span class="badge bg-secondary text-white">TLV</span></div>
+                        <div class="col text-end personcol">
+                          <img height="20px" width="20px" style="margin: 0 3px 3px 0;" src="images/aircraft-landing.svg" /> 
+                          <span class="dot-yellow"></span>
+                          <span class="dist-num">3.4</span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-8 text-start">
+                          <img src="images/sun.svg">31°C&nbsp;
+                          <span class="text-white-50">|</span>
+                          <img src="images/arrow.svg" height="20px" width="20px">31°C&nbsp;
+                        </div>
+                        <div class="col text-end personcol">
+                          <img height="20px" width="20px" style="margin: 0 3px 3px 0;" src="images/aircraft-takeoff.svg" /> 
+                          <span class="dot-orange"></span>
+                          <span class="dist-num">4.2</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card card-lay">
+                    <div class="card-body card-lay-body text-white">
+                      <div class="row">
+                        <div class="col-8 text-start" style="font-weight: 600;">Tel Aviv&nbsp;<span class="badge bg-secondary text-white">TLV</span></div>
+                        <div class="col text-end personcol">
+                          <img height="20px" width="20px" style="margin: 0 3px 3px 0;" src="images/aircraft-landing.svg" /> 
+                          <span class="dot-yellow"></span>
+                          <span class="dist-num">3.4</span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-8 text-start">
+                          <img src="images/sun.svg">31°C&nbsp;
+                          <span class="text-white-50">|</span>
+                          <img src="images/arrow.svg" height="20px" width="20px">31°C&nbsp;
+                        </div>
+                        <div class="col text-end personcol">
+                          <img height="20px" width="20px" style="margin: 0 3px 3px 0;" src="images/aircraft-takeoff.svg" /> 
+                          <span class="dot-orange"></span>
+                          <span class="dist-num">4.2</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item mt-2">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              Bookmarks
+            </button>
+          </h2>
+          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body third">
+
+
+
+              <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link nav-pill-menu active" id="pills-aircraft-tab" data-bs-toggle="pill" data-bs-target="#pills-aircraft" type="button" role="tab" aria-controls="pills-aircraft" aria-selected="true">Aircraft</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link nav-pill-menu" id="pills-flights-tab" data-bs-toggle="pill" data-bs-target="#pills-flights" type="button" role="tab" aria-controls="pills-flights" aria-selected="false">Flights</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link nav-pill-menu" id="pills-airports-tab" data-bs-toggle="pill" data-bs-target="#pills-airports" type="button" role="tab" aria-controls="pills-airports" aria-selected="false">Airports</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link nav-pill-menu" id="pills-locations-tab" data-bs-toggle="pill" data-bs-target="#pills-locations" type="button" role="tab" aria-controls="pills-locations" aria-selected="false">Locations</button>
+                </li>
+              </ul>
+              <div class="tab-content" id="pills-tabContent">
+                
+                <div class="tab-pane fade show active" id="pills-aircraft" role="tabpanel" aria-labelledby="pills-aircraft-tab">
+                  <div class="card bookmark-card">
+                    <div class="card-body">
+                      <p style="font-size: 14px; margin-bottom: 0.2rem;" class="text-center text-white">Create a free Flightradar24 Basic account to add one bookmark or upgrade to a Silver (10), Gold (25) or Business (60) subscription to add a higher number of items.</p>
+                      <button type="button" class="btn btn-success">
+                        7-day free trail | Learn more
+                      </button>
+                    </div>
+                  </div>
+                  <div class="text-center mt-2">
+                    <span><img src="images/add-bookmark.svg"></span>
+                    <span class="text-white">Add bookmark</span>
+                  </div>
+                </div>
+
+                <div class="tab-pane fade" id="pills-flights" role="tabpanel" aria-labelledby="pills-flights-tab">
+                  <div class="card bookmark-card">
+                    <div class="card-body">
+                      <p style="font-size: 14px; margin-bottom: 0.2rem;" class="text-center text-white">Create a free Flightradar24 Basic account to add one bookmark or upgrade to a Silver (10), Gold (25) or Business (60) subscription to add a higher number of items.</p>
+                      <button type="button" class="btn btn-success">
+                        7-day free trail | Learn more
+                      </button>
+                    </div>
+                  </div>
+                  <div class="text-center mt-2">
+                    <span><img src="images/add-bookmark.svg"></span>
+                    <span class="text-white">Add bookmark</span>
+                  </div>
+                </div>
+                
+                <div class="tab-pane fade" id="pills-airports" role="tabpanel" aria-labelledby="pills-airports-tab">
+                  <div class="card bookmark-card">
+                    <div class="card-body">
+                      <p style="font-size: 14px; margin-bottom: 0.2rem;" class="text-center text-white">Create a free Flightradar24 Basic account to add one bookmark or upgrade to a Silver (10), Gold (25) or Business (60) subscription to add a higher number of items.</p>
+                      <button type="button" class="btn btn-success">
+                        7-day free trail | Learn more
+                      </button>
+                    </div>
+                  </div>
+                  <div class="text-center mt-2">
+                    <span><img src="images/add-bookmark.svg"></span>
+                    <span class="text-white">Add bookmark</span>
+                  </div>
+                </div>
+                
+                <div class="tab-pane fade" id="pills-locations" role="tabpanel" aria-labelledby="pills-locations-tab">
+                  <div class="card bookmark-card">
+                    <div class="card-body">
+                      <p style="font-size: 14px; margin-bottom: 0.2rem;" class="text-center text-white">Create a free Flightradar24 Basic account to add one bookmark or upgrade to a Silver (10), Gold (25) or Business (60) subscription to add a higher number of items.</p>
+                      <button type="button" class="btn btn-success">
+                        7-day free trail | Learn more
+                      </button>
+                    </div>
+                  </div>
+                  <div class="text-center mt-2">
+                    <span><img src="images/add-bookmark.svg"></span>
+                    <span class="text-white">Add bookmark</span>
+                  </div>
+                </div>
+              
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div id="map"></div>
+
+
+    <div class="offcanvas offcanvas-start marker-offcanvas" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+
+      <div class="offcanvas-header bg-dark">
+        
+        <div class="container marker-canvas-cont">
+          <div class="row">
+            <div class="col">
+              <span id="flight-name" class="marker-text fw-600 text-uppercase fs-5 lh-base">Dlh43U2</span>
+              <span id="callsign" class="badge bg-secondary text-white">LH1095</span>
+              <span id="flight-type" class="badge text-dark">A20N</span>
+            </div>
+          </div>
+
+          <div class="row text-white">
+            <div class="col text-white">easyJet</div>
+          </div>
+
+          <div class="row text-white">
+            <div class="col text-white-50 fs-6">Operated by easyJet Europe</div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+
+      <div class="marker-offcanvas-body offcanvas-body">
+        
+        <div class="marker-canvas-img">
+          <img class="image-fluid" src="images/airplane.jpg">
+        </div>
+
+
+        <div class="container">
+          <div class="row">
+
+            <div class="col-md-6" style="background-color: rgb(237 237 237);">
+                <h1 id="iataAirportdep" class="fw-600 text-uppercase text-center mb-0 fs-2">N/A</h1>
+                <p id="contAirportdep" class="text-uppercase text-center mb-0 fw-600" style="font-size: 0.75rem;">N/A</p>
+                <p class="text-uppercase text-center mb-0 fw-600" style="font-size: 0.75rem;">IST (UTC +05:30)</p>
+            </div>
+            
+            <!-- <div class="col-md-auto">
+              Variable width content
+            </div> -->
+            
+            <div class="col-md-6" style="background-color: rgb(237 237 237); border-left: 2px solid white;">
+                <h1 id="iataAirportdest" class="fw-600 text-uppercase text-center mb-0 fs-2">N/A</h1>
+                <p id="contAirportdest" class="text-uppercase text-center mb-0 fw-600" style="font-size: 0.75rem;">N/A</p>
+                <p class="text-uppercase text-center mb-0 fw-600" style="font-size: 0.75rem;">WEST (UTC +01:00)</p>
+            </div>
+          
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 pt-2 d-flex scheduled-col">
+                <p class="scheduled-text text-uppercase mb-0">scheduled</p>
+                <p class="scheduled-time mb-0" id="sc-time">3:45</p>
+            </div>
+            <div class="col-md-6 pt-2 d-flex scheduled-col">
+                <p class="scheduled-text text-uppercase mb-0">scheduled</p>
+                <p class="scheduled-time mb-0">N/A</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 pt-2 d-flex scheduled-col">
+                <p class="scheduled-text text-uppercase mb-0">actual</p>
+                <p class="scheduled-time mb-0" id="sc-time-act">3:45</p>
+            </div>
+            <div class="col-md-6 pt-2 d-flex scheduled-col">
+                <p class="scheduled-text text-uppercase mb-0">estimated</p>
+                <p class="scheduled-time mb-0">N/A</p>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-md-12 pt-2 d-flex scheduled-col justify-content-center">
+                <p class="scheduled-text text-uppercase mb-0">Flight</p>&nbsp;
+                <p id="flight-event-type" class="scheduled-text text-uppercase mb-0">N/A</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+
+    <!-- SETTINGS OFFCANVAS START -->     
+      <div class="offcanvas offcanvas-start settings-offcanvas" tabindex="-1" id="settings-offcanvasRight" aria-labelledby="offcanvasRightLabel">
+
+        <div class="offcanvas-header settings-offcanvas-header bg-dark">
+          <span class="fw-600 text-center text-white fs-0">Settings</span>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+  
+        <div class="settings-offcanvas offcanvas-body">
+          <ul class="nav nav-pills settings-pills" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu active" id="pills-map-tab" data-bs-toggle="pill" data-bs-target="#pills-map" type="button" role="tab" aria-controls="pills-map" aria-selected="true">Map</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu" id="pills-visibility-tab" data-bs-toggle="pill" data-bs-target="#pills-visibility" type="button" role="tab" aria-controls="pills-visibility" aria-selected="false">Visibility</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu" id="pills-misc-tab" data-bs-toggle="pill" data-bs-target="#pills-misc" type="button" role="tab" aria-controls="pills-misc" aria-selected="false">Misc</button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-map" role="tabpanel" aria-labelledby="pills-map-tab">
+
+              <div class="card bookmark-card">
+                <div class="card-body">
+                  <p style="font-size: 14px; margin-bottom: 0.2rem;" class="text-center text-white">Create a free Flightradar24 Basic account to add one bookmark or upgrade to a Silver (10), Gold (25) or Business (60) subscription to add a higher number of items.</p>
+                  <button type="button" class="btn btn-success">
+                    7-day free trail | Learn more
+                  </button>
+                </div>
+              </div>
+              <div class="text-center mt-2">
+                <span><img src="images/add-bookmark.svg"></span>
+                <span class="text-white">Add bookmark</span>
+              </div>
+
+            </div>
+
+            <div class="tab-pane fade" id="pills-visibility" role="tabpanel" aria-labelledby="pills-visibility-tab">
+
+              <div class="card settings-card">
+                <div class="settings-visibility">
+                  <p class="mb-0" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="settings-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card settings-card">
+                <div class="settings-visibility">
+                  <p class="mb-0" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="settings-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card settings-card">
+                <div class="settings-visibility">
+                  <p class="mb-0 text-uppercase" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="settings-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            
+            <div class="tab-pane fade" id="pills-misc" role="tabpanel" aria-labelledby="pills-misc-tab">
+              
+              <div class="card settings-card">
+                <div class="settings-visibility">
+                  <div class="settings-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start text-uppercase" style="font-weight: 600;">Show Trail Tooltip</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">At-a-glance altitude and speed information when you hover over any portion of a selected flight's track.</p>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          
+          </div>
+        </div>
+      </div>
+    <!-- SETTINGS OFFCANVAS END -->
+
+
+
+
+    <!-- WEATHER OFFCANVAS START -->     
+      <div class="offcanvas offcanvas-start weather-offcanvas" tabindex="-1" id="weather-offcanvasRight" aria-labelledby="offcanvasRightLabel">
+
+        <div class="offcanvas-header weather-offcanvas-header bg-dark">
+          <span class="fw-600 text-center text-white fs-0">Weather</span>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+  
+        <div class="weather-offcanvas offcanvas-body">
+          <ul class="nav nav-pills weather-pills" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu active" id="pills-map-tab" data-bs-toggle="pill" data-bs-target="#pills-map" type="button" role="tab" aria-controls="pills-map" aria-selected="true">Map</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu" id="pills-visibility-tab" data-bs-toggle="pill" data-bs-target="#pills-visibility" type="button" role="tab" aria-controls="pills-visibility" aria-selected="false">Visibility</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu" id="pills-misc-tab" data-bs-toggle="pill" data-bs-target="#pills-misc" type="button" role="tab" aria-controls="pills-misc" aria-selected="false">Misc</button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-map" role="tabpanel" aria-labelledby="pills-map-tab">
+
+              <div class="card bookmark-card">
+                <div class="card-body">
+                  <p style="font-size: 14px; margin-bottom: 0.2rem;" class="text-center text-white">Create a free Flightradar24 Basic account to add one bookmark or upgrade to a Silver (10), Gold (25) or Business (60) subscription to add a higher number of items.</p>
+                  <button type="button" class="btn btn-success">
+                    7-day free trail | Learn more
+                  </button>
+                </div>
+              </div>
+              <div class="text-center mt-2">
+                <span><img src="images/add-bookmark.svg"></span>
+                <span class="text-white">Add bookmark</span>
+              </div>
+
+            </div>
+
+            <div class="tab-pane fade" id="pills-visibility" role="tabpanel" aria-labelledby="pills-visibility-tab">
+
+              <div class="card weather-card">
+                <div class="weather-visibility">
+                  <p class="mb-0" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="weather-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card weather-card">
+                <div class="weather-visibility">
+                  <p class="mb-0" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="weather-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card weather-card">
+                <div class="weather-visibility">
+                  <p class="mb-0 text-uppercase" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="weather-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            
+            <div class="tab-pane fade" id="pills-misc" role="tabpanel" aria-labelledby="pills-misc-tab">
+              
+              <div class="card weather-card">
+                <div class="weather-visibility">
+                  <div class="weather-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start text-uppercase" style="font-weight: 600;">Show Trail Tooltip</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">At-a-glance altitude and speed information when you hover over any portion of a selected flight's track.</p>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          
+          </div>
+        </div>
+      </div>
+    <!-- WEATHER OFFCANVAS END -->
+
+
+
+    <!-- FILTERS OFFCANVAS START -->     
+      <div class="offcanvas offcanvas-start filters-offcanvas" tabindex="-1" id="filters-offcanvasRight" aria-labelledby="offcanvasRightLabel">
+
+        <div class="offcanvas-header filters-offcanvas-header bg-dark">
+          <span class="fw-600 text-center text-white fs-0">Filters</span>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+  
+        <div class="filters-offcanvas offcanvas-body">
+          <ul class="nav nav-pills filters-pills" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu active" id="pills-map-tab" data-bs-toggle="pill" data-bs-target="#pills-map" type="button" role="tab" aria-controls="pills-map" aria-selected="true">Map</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu" id="pills-visibility-tab" data-bs-toggle="pill" data-bs-target="#pills-visibility" type="button" role="tab" aria-controls="pills-visibility" aria-selected="false">Visibility</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu" id="pills-misc-tab" data-bs-toggle="pill" data-bs-target="#pills-misc" type="button" role="tab" aria-controls="pills-misc" aria-selected="false">Misc</button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-map" role="tabpanel" aria-labelledby="pills-map-tab">
+
+              <div class="card bookmark-card">
+                <div class="card-body">
+                  <p style="font-size: 14px; margin-bottom: 0.2rem;" class="text-center text-white">Create a free Flightradar24 Basic account to add one bookmark or upgrade to a Silver (10), Gold (25) or Business (60) subscription to add a higher number of items.</p>
+                  <button type="button" class="btn btn-success">
+                    7-day free trail | Learn more
+                  </button>
+                </div>
+              </div>
+              <div class="text-center mt-2">
+                <span><img src="images/add-bookmark.svg"></span>
+                <span class="text-white">Add bookmark</span>
+              </div>
+
+            </div>
+
+            <div class="tab-pane fade" id="pills-visibility" role="tabpanel" aria-labelledby="pills-visibility-tab">
+
+              <div class="card filters-card">
+                <div class="filters-visibility">
+                  <p class="mb-0" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="filters-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card filters-card">
+                <div class="filters-visibility">
+                  <p class="mb-0" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="filters-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card filters-card">
+                <div class="filters-visibility">
+                  <p class="mb-0 text-uppercase" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="filters-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            
+            <div class="tab-pane fade" id="pills-misc" role="tabpanel" aria-labelledby="pills-misc-tab">
+              
+              <div class="card filters-card">
+                <div class="filters-visibility">
+                  <div class="filters-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start text-uppercase" style="font-weight: 600;">Show Trail Tooltip</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">At-a-glance altitude and speed information when you hover over any portion of a selected flight's track.</p>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          
+          </div>
+        </div>
+      </div>
+    <!-- FILTERS OFFCANVAS END -->
+
+
+
+    <!-- WIDGETS OFFCANVAS START -->     
+      <div class="offcanvas offcanvas-start widgets-offcanvas" tabindex="-1" id="widgets-offcanvasRight" aria-labelledby="offcanvasRightLabel">
+
+        <div class="offcanvas-header widgets-offcanvas-header bg-dark">
+          <span class="fw-600 text-center text-white fs-0">Widgets</span>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+  
+        <div class="widgets-offcanvas offcanvas-body">
+          <ul class="nav nav-pills widgets-pills" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu active" id="pills-map-tab" data-bs-toggle="pill" data-bs-target="#pills-map" type="button" role="tab" aria-controls="pills-map" aria-selected="true">Map</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu" id="pills-visibility-tab" data-bs-toggle="pill" data-bs-target="#pills-visibility" type="button" role="tab" aria-controls="pills-visibility" aria-selected="false">Visibility</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu" id="pills-misc-tab" data-bs-toggle="pill" data-bs-target="#pills-misc" type="button" role="tab" aria-controls="pills-misc" aria-selected="false">Misc</button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-map" role="tabpanel" aria-labelledby="pills-map-tab">
+
+              <div class="card bookmark-card">
+                <div class="card-body">
+                  <p style="font-size: 14px; margin-bottom: 0.2rem;" class="text-center text-white">Create a free Flightradar24 Basic account to add one bookmark or upgrade to a Silver (10), Gold (25) or Business (60) subscription to add a higher number of items.</p>
+                  <button type="button" class="btn btn-success">
+                    7-day free trail | Learn more
+                  </button>
+                </div>
+              </div>
+              <div class="text-center mt-2">
+                <span><img src="images/add-bookmark.svg"></span>
+                <span class="text-white">Add bookmark</span>
+              </div>
+
+            </div>
+
+            <div class="tab-pane fade" id="pills-visibility" role="tabpanel" aria-labelledby="pills-visibility-tab">
+
+              <div class="card widgets-card">
+                <div class="widgets-visibility">
+                  <p class="mb-0" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="widgets-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card widgets-card">
+                <div class="widgets-visibility">
+                  <p class="mb-0" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="widgets-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card widgets-card">
+                <div class="widgets-visibility">
+                  <p class="mb-0 text-uppercase" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="widgets-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            
+            <div class="tab-pane fade" id="pills-misc" role="tabpanel" aria-labelledby="pills-misc-tab">
+              
+              <div class="card widgets-card">
+                <div class="widgets-visibility">
+                  <div class="widgets-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start text-uppercase" style="font-weight: 600;">Show Trail Tooltip</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">At-a-glance altitude and speed information when you hover over any portion of a selected flight's track.</p>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          
+          </div>
+        </div>
+      </div>
+    <!-- WIDGETS OFFCANVAS END -->
+
+
+
+    <!-- PLAYBACK OFFCANVAS START -->     
+      <div class="offcanvas offcanvas-start playback-offcanvas" tabindex="-1" id="playback-offcanvasRight" aria-labelledby="offcanvasRightLabel">
+
+        <div class="offcanvas-header playback-offcanvas-header bg-dark">
+          <span class="fw-600 text-center text-white fs-0">Playback</span>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+  
+        <div class="playback-offcanvas offcanvas-body">
+          <ul class="nav nav-pills playback-pills" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu active" id="pills-map-tab" data-bs-toggle="pill" data-bs-target="#pills-map" type="button" role="tab" aria-controls="pills-map" aria-selected="true">Map</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu" id="pills-visibility-tab" data-bs-toggle="pill" data-bs-target="#pills-visibility" type="button" role="tab" aria-controls="pills-visibility" aria-selected="false">Visibility</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link nav-pill-menu" id="pills-misc-tab" data-bs-toggle="pill" data-bs-target="#pills-misc" type="button" role="tab" aria-controls="pills-misc" aria-selected="false">Misc</button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-map" role="tabpanel" aria-labelledby="pills-map-tab">
+
+              <div class="card bookmark-card">
+                <div class="card-body">
+                  <p style="font-size: 14px; margin-bottom: 0.2rem;" class="text-center text-white">Create a free Flightradar24 Basic account to add one bookmark or upgrade to a Silver (10), Gold (25) or Business (60) subscription to add a higher number of items.</p>
+                  <button type="button" class="btn btn-success">
+                    7-day free trail | Learn more
+                  </button>
+                </div>
+              </div>
+              <div class="text-center mt-2">
+                <span><img src="images/add-bookmark.svg"></span>
+                <span class="text-white">Add bookmark</span>
+              </div>
+
+            </div>
+
+            <div class="tab-pane fade" id="pills-visibility" role="tabpanel" aria-labelledby="pills-visibility-tab">
+
+              <div class="card playback-card">
+                <div class="playback-visibility">
+                  <p class="mb-0" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="playback-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card playback-card">
+                <div class="playback-visibility">
+                  <p class="mb-0" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="playback-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card playback-card">
+                <div class="playback-visibility">
+                  <p class="mb-0 text-uppercase" style="background-color: #d1cfd0;">Data Sources</p>
+                  <div class="playback-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start" style="font-weight: 600;">ADS-B (LIVE)</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">GPS based aircraft tracking via terrestrial receivers. Real-time.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            
+            <div class="tab-pane fade" id="pills-misc" role="tabpanel" aria-labelledby="pills-misc-tab">
+              
+              <div class="card playback-card">
+                <div class="playback-visibility">
+                  <div class="playback-row pb-1">
+                  <div class="row">
+                    <div class="col-8 text-start text-uppercase" style="font-weight: 600;">Show Trail Tooltip</div>
+                    
+                    <div class="col-4 text-end">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled">
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-3">At-a-glance altitude and speed information when you hover over any portion of a selected flight's track.</p>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          
+          </div>
+        </div>
+      </div>
+    <!-- PLAYBACK OFFCANVAS END -->
+
+
+
+      <div class="footer">
+      <button type="button" onclick="toggleSettings()" class="btn btn-circle btn-sm"><img src="images/settings.svg"></button>
+      <button type="button" onclick="toggleWeather()" class="btn btn-circle btn-sm"><img src="images/weather.svg"></button>
+      <button type="button" onclick="toggleFilters()" class="btn btn-circle btn-sm"><img src="images/filters.svg"></button>
+      <button type="button" onclick="toggleWidgets()" class="btn btn-circle btn-sm"><img src="images/widgets.svg"></button>
+      <button type="button" onclick="togglePlayback()" class="btn btn-circle btn-sm"><img src="images/playback.svg"></button>
+    </div>
+
+
+
+    <script>
+      function toggleSettings() {
+        document.getElementById("settings-btn").click();
+      }
+      function toggleWeather() {
+        document.getElementById("weather-btn").click();
+      }
+      function toggleFilters() {
+        document.getElementById("filters-btn").click();
+      }
+      function toggleWidgets() {
+        document.getElementById("widgets-btn").click();
+      }
+      function togglePlayback() {
+        document.getElementById("playback-btn").click();
+      }
+    </script>
+
+    <script>
+      const loginButto = document.getElementById("auth-button");
+      const loginFor = document.getElementById("login-form");
+
+      loginButto.addEventListener("click", () => {
+        // Toggle the visibility of the login form
+        loginFor.style.display =
+          loginFor.style.display === "none" ? "block" : "none";
+      });
+    </script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      const airport_details = [];
+      // 830313113
+
+      async function fetch_airport() {
+        try {
+          const airports = await fetch("/airports.json");
+          const res = await airports.json();
+          airport_details.push(res.airports_data);
+        } catch (error) {
+          console.error("Error fetching airport details:", error);
+        }
+      }
+
+      async function initMap() {
+        await fetch_airport();
+        var stylesArray = [
+          {
+            stylers: [{ lightness: -50 }, { saturation: -70 }],
+          },
+        ];
+
+        const mapCenter = { lat: 51.01, lng: -1.08 }; // Set a default map center
+        const map = new google.maps.Map(document.getElementById("map"), {
+          center: mapCenter,
+          zoom: 4,
+          styles: stylesArray,
+          disableDefaultUI: true,
+        });
+
+
+        var flightData = JSON.parse('<%- JSON.stringify(data).replace(/<\//g, '\\u003C/') %>');
+
+        // Add markers and infowindows for each flight
+        flightData.forEach((flight) => {
+          const flightPosition = {
+            lat: parseFloat(flight.event_lat),
+            lng: parseFloat(flight.event_lon),
+          };
+
+          const marker = new google.maps.Marker({
+            position: flightPosition,
+            map: map,
+            icon: "images/plane.png",
+          });
+
+
+          // const arr = [
+          //     [-33.950198, 151.259302],
+          //     [-23.923036, 15.259052],
+          //     [-42.028249, 121.157507],
+          //     [-33.80010128657071, 151.28747820854187]
+          // ];
+          // 
+          // let currentMarkerIndex = 0;
+          // const updateInterval = 4000;
+
+          // function updateMarkerPosition() {
+          //   const position = arr[currentMarkerIndex];
+          //   console.log(position);
+          //   marker.setPosition(new google.maps.LatLng(parseFloat(position[0]), parseFloat(position[1])));
+          //   currentMarkerIndex = (currentMarkerIndex + 1) % arr.length;
+          // }
+          // setInterval(updateMarkerPosition, updateInterval);
+
+          
+          
+          
+
+
+          marker.addListener("click", () => {
+            document.getElementById("firebut").click();
+
+            // Find departure and destination airports in the airport data
+            const departureAirport = airport_details[0].find(
+              (airport) => airport.iata === flight.departed_from_iata
+            );
+
+            console.log(departureAirport);
+
+            const destinationAirport = airport_details[0].find(
+              (airport) => airport.iata === flight.dest_iata
+            );
+
+            console.log(destinationAirport);
+
+            iataAirportdep = departureAirport.iata;
+            contAirportdep = departureAirport.country;
+            document.getElementById("iataAirportdep").innerHTML= iataAirportdep;
+            document.getElementById("contAirportdep").innerHTML= contAirportdep;
+            
+            iataAirportdest = destinationAirport.iata;
+            contAirportdest = destinationAirport.country;
+            document.getElementById("iataAirportdest").innerHTML= iataAirportdest;
+            document.getElementById("contAirportdest").innerHTML= contAirportdest;
+
+            document.getElementById("flight-name").innerHTML= flight.flight;
+            document.getElementById("callsign").innerHTML= flight.callsign;
+            document.getElementById("flight-type").innerHTML= flight.aircraft_type;
+            document.getElementById("flight-event-type").innerHTML= flight.event_type;
+            
+            const isoTimestamp = flight.event_time;
+            const date = new Date(isoTimestamp);
+            const hours = date.getUTCHours();
+            const minutes = date.getUTCMinutes();
+            const minutesact = date.getUTCMinutes()+15;
+            const period = hours >= 12 ? "PM" : "AM";
+            const twelveHour = hours % 12 || 12;
+            const formattedTime = `${twelveHour}:${minutes.toString().padStart(2, "0")} ${period}`;
+            const formattedTimeact = `${twelveHour}:${minutesact.toString().padStart(2, "0")} ${period}`;
+
+            document.getElementById("sc-time").innerHTML= formattedTime; 
+            document.getElementById("sc-time-act").innerHTML= formattedTimeact; 
+
+            
+
+            // Create a polyline between departure and destination airports
+            if (departureAirport && destinationAirport) {
+              const departurePosition = {
+                lat: parseFloat(departureAirport.lat),
+                lng: parseFloat(departureAirport.lon),
+              };
+
+              const destinationPosition = {
+                lat: parseFloat(destinationAirport.lat),
+                lng: parseFloat(destinationAirport.lon),
+              };
+
+              const flightPath = new google.maps.Polyline({
+                path: [departurePosition, destinationPosition],
+                geodesic: true,
+                strokeColor: "#7F00FF",
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+              });
+
+              flightPath.setMap(map);
+
+              // Hiding path 
+              setTimeout(function() {
+                flightPath.setVisible(false);
+              }, 5000);
+            }
+          });
+        });
+
+
+        // Airports
+        google.maps.event.addListener(map, "zoom_changed", function () {
+          for (const airports of airport_details[0]) {
+            const airportPosition = {
+              lat: parseFloat(airports.lat),
+              lng: parseFloat(airports.lon),
+            };
+
+            if (map.getZoom() >= 6) {
+              const marker2 = new google.maps.Marker({
+                position: airportPosition,
+                map: map,
+                icon: "images/location.png",
+              });
+
+              const infoAirportContent = `
+          <div>
+            <p><strong>Airport Name:</strong> ${airports.name}</p>
+            <p><strong>IATA:</strong> ${airports.iata}</p>
+            <p><strong>ICAO:</strong> ${airports.icao}</p>
+            <p><strong>Country:</strong> ${airports.country}</p>
+          </div>
+        `;
+
+              const infoAirport = new google.maps.InfoWindow({
+                content: infoAirportContent,
+              });
+
+              marker2.addListener("click", () => {
+                infoAirport.open(map, marker2);
+              });
+            }
+          }
+        });
+      }
+      // END
+    </script>
+
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1uKjyl5QuGeQPeeJCm2MyK4XxIJ6t0_8&callback=initMap"
+      defer
+    ></script>
+  </body>
+</html>
