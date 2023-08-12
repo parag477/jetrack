@@ -1482,6 +1482,7 @@
 
     <script>
       const airport_details = [];
+      const timezones = [];
       // 830313113
 
       async function fetch_airport() {
@@ -1494,8 +1495,19 @@
         }
       }
 
+      async function fetch_timezones() {
+        try {
+          const timezone = await fetch("/country_timezones.json");
+          const res = await timezone.json();
+          timezones.push(res.tz_data);
+        } catch (error) {
+          console.error("Error fetching timezone details:", error);
+        }
+      }
+
       async function initMap() {
         await fetch_airport();
+        await fetch_timezones();
         var stylesArray = [
           {
             stylers: [{ lightness: -50 }, { saturation: -70 }],
@@ -1547,7 +1559,10 @@
 
           
           
+          // const countriesArray = airport_details[0].map(airport => airport.country);
+          // console.log(countriesArray);
           
+
 
 
           marker.addListener("click", () => {
@@ -1581,45 +1596,38 @@
             document.getElementById("flight-type").innerHTML= flight.aircraft_type;
             document.getElementById("flight-event-type").innerHTML= flight.event_type;
             
-            // const isoTimestamp = flight.event_time;
-            // const date = new Date(isoTimestamp);
-            // const hours = date.getUTCHours();
-            // const minutes = date.getUTCMinutes();
-            // const minutesact = date.getUTCMinutes()+15;
-            // const period = hours >= 12 ? "PM" : "AM";
-            // const twelveHour = hours % 12 || 12;
-            // const formattedTime = `${twelveHour}:${minutes.toString().padStart(2, "0")} ${period}`;
-            // const formattedTimeact = `${twelveHour}:${minutesact.toString().padStart(2, "0")} ${period}`;
 
-            // document.getElementById("sc-time").innerHTML= formattedTime; 
-            // document.getElementById("sc-time-act").innerHTML= formattedTimeact; 
-            
+            // Setting Time 
             const isoTimestamp = flight.event_time;
             const date = new Date(isoTimestamp);
-            const timeZone = 'en-US';
-            // Convert UTC time to local time in the specified time zone
-            const formattedTime = date.toLocaleString(timeZone, {
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true,
-            });
+            const countryName = contAirportdep;
+            const timeZone = timezones[0][0][countryName];
 
-            // Add minutes
-            date.setMinutes(date.getMinutes() + 20);
-            // Convert the updated date to local time with the same format
-            const formattedTimeact = date.toLocaleString(timeZone, {
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true,
-            });
+            if (timeZone) {
+              // Convert UTC time to local time in the specified time zone
+              const formattedTime = date.toLocaleString('en-US', {
+                timeZone,
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+              });
 
+              // Add minutes
+              date.setMinutes(date.getMinutes() + 20);
+              // Convert the updated date to local time with the same format
+              const formattedTimeact = date.toLocaleString('en-US', {
+                timeZone,
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+              });
 
-
-            console.log(formattedTime);
-            console.log(formattedTimeact);
-
-            document.getElementById("sc-time").innerHTML= formattedTime; 
-            document.getElementById("sc-time-act").innerHTML= formattedTimeact; 
+              console.log(`Formatted Time in ${countryName}: ${formattedTime}`);
+              document.getElementById("sc-time").innerHTML= formattedTimeact; 
+              document.getElementById("sc-time-act").innerHTML= formattedTime; 
+            } else {
+              console.log(`Time zone not found for ${countryName}`);
+            }
 
             
 
