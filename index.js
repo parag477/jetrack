@@ -42,7 +42,7 @@ app.use(express.static(path.join(__dirname, "assets")));
 
 // console.log(express.static(path.join(__dirname, "/public")));
 
-const mongoUrl = "mongodb://localhost:27017/";
+const mongoUrl = process.env.MONGO_URI;
 const dbName = "flight_db";
 const collectionName = "flight_details";
 
